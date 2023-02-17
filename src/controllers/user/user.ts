@@ -8,5 +8,6 @@ export const loginStudent: Controller = (req, res) =>
     req,
     res,
     service: signInUser,
+    params: { id: Number(req.params.id) },
     validation: { schema: loginSchema },
   });

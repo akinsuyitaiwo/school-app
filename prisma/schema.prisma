@@ -10,20 +10,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Users {
-  id         Int        @id @default(autoincrement())
-  email      String     @unique @db.VarChar(255)
-  password   String
-  username   String    @default("") @db.VarChar(255)
-  phone      String?    @default("")
-  verified   Boolean    @default(false)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @default(now()) @updatedAt
-  role       enum_Role?
-  tutor      Tutors?
-  student    Students?
-  otps       Otps?
+  id        Int       @id @default(autoincrement())
+  email     String    @unique @db.VarChar(255)
+  password  String
+  username  String    @db.VarChar(255)
+  phone     String?   @default("")
+  verified  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  role      enum_Role
+  tutor     Tutors?
+  student   Students?
+  otps      Otps?
 }
 
 model Tutors {
@@ -32,23 +31,27 @@ model Tutors {
   lastName  String?     @default("") @db.VarChar(255)
   photo     String?     @default("") @db.VarChar(255)
   userId    Int         @unique
+  classId   Int
   createdAt DateTime    @default(now())
   updatedAt DateTime    @default(now()) @updatedAt
   gender    enum_Gender @default(nb)
   user      Users       @relation(fields: [userId], references: [id], onUpdate: Restrict)
+  class     Class       @relation(fields: [classId], references: [id], onUpdate: Restrict)
 }
 
 model Students {
-  id           Int          @id @default(autoincrement())
-  firstName    String?      @default("") @db.VarChar(255)
-  lastName     String?      @default("") @db.VarChar(255)
-  photo        String?      @default("")
-  dob          String?      @default("")
-  gender       enum_Gender?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @default(now()) @updatedAt
-  userId       Int          @unique
-  user         Users        @relation(fields: [userId], references: [id], onUpdate: Restrict)
+  id        Int          @id @default(autoincrement())
+  firstName String?      @default("") @db.VarChar(255)
+  lastName  String?      @default("") @db.VarChar(255)
+  photo     String?      @default("")
+  dob       String?      @default("")
+  gender    enum_Gender?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @default(now()) @updatedAt
+  userId    Int          @unique
+  classId   Int
+  user      Users        @relation(fields: [userId], references: [id], onUpdate: Restrict)
+  class     Class        @relation(fields: [classId], references: [id], onUpdate: Restrict)
 }
 
 model Otps {
@@ -59,6 +62,15 @@ model Otps {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
   user      Users    @relation(fields: [userId], references: [id], onUpdate: Restrict)
+}
+
+model Class {
+  id        Int        @id @default(autoincrement())
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+  student   Students[]
+  tutor     Tutors[]
 }
 
 enum enum_Gender {

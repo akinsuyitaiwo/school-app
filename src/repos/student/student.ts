@@ -13,6 +13,11 @@ export const createStudent = ({
     db.students.create({
       data: {
         ...data,
+        class: {
+          connect: {
+            id: 1,
+          },
+        },
         user: {
           connectOrCreate: {
             where: { email },
